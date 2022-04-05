@@ -9,63 +9,96 @@ Datasets from March 2021 to Feb 2022.
 I ran the following queries to extract insights from the data.
 */
 
-#determine the max and average ride length by day of week for each rider type
-SELECT member_casual, 
-EXTRACT(DAYOFWEEK FROM started_at) AS weekday, 
-AVG(ended_at - started_at) AS avg_ride_length,
-MAX(ended_at - started_at) AS max_ride_length
-FROM `bigquery-newproject.cyclistic.tripdata-202103-202202`
-GROUP BY weekday, member_casual
-ORDER BY avg_ride_length DESC
+  #determine the max and average ride length by day of week for each rider type
+SELECT 
+  member_casual, 
+  EXTRACT(DAYOFWEEK FROM started_at) AS weekday, 
+  AVG(ended_at - started_at) AS avg_ride_length,
+  MAX(ended_at - started_at) AS max_ride_length
+FROM 
+  `bigquery-newproject.cyclistic.tripdata-202103-202202`
+GROUP BY 
+  weekday, member_casual
+ORDER BY 
+  avg_ride_length DESC
 
 
-#get total number of each rider type
-SELECT member_casual, COUNT(member_casual) AS total
-FROM `bigquery-newproject.cyclistic.tripdata-202103-202202`
-GROUP BY member_casual
+  #get total number of each rider type
+SELECT
+  member_casual,
+  COUNT(member_casual) AS total
+FROM
+  `bigquery-newproject.cyclistic.tripdata-202103-202202`
+GROUP BY
+  member_casual
 
 
-#aggregate total number of rides for each rider type and bike type used 
-SELECT member_casual, rideable_type, COUNT(member_casual) AS totalriders
-FROM `bigquery-newproject.cyclistic.tripdata-202103-202202`
-GROUP BY member_casual, rideable_type
-ORDER BY totalriders DESC
+  #aggregate total number of rides for each rider type and bike type used 
+SELECT 
+  member_casual, 
+  rideable_type, 
+  COUNT(member_casual) AS totalriders
+FROM 
+  `bigquery-newproject.cyclistic.tripdata-202103-202202`
+GROUP BY 
+  member_casual, rideable_type
+ORDER BY 
+  totalriders DESC
 
 
-#get max ride length and average ride length for each rider type
-SELECT member_casual, 
-MAX(ended_at - started_at) AS max_ride_length,
-AVG(ended_at - started_at) AS avg_ride_length
-FROM `bigquery-newproject.cyclistic.tripdata-202103-202202`
-GROUP BY member_casual
+  #get max ride length and average ride length for each rider type
+SELECT 
+  member_casual, 
+  MAX(ended_at - started_at) AS max_ride_length,
+  AVG(ended_at - started_at) AS avg_ride_length
+FROM 
+  `bigquery-newproject.cyclistic.tripdata-202103-202202`
+GROUP BY 
+  member_casual
 
 
-#aggregate total ride for each rider type and day of week (1 is Sunday, 2 is Monday... 7 is Saturday)
-SELECT member_casual, 
-EXTRACT(DAYOFWEEK FROM started_at) AS weekday, 
-COUNT(EXTRACT(DAYOFWEEK FROM started_at)) AS totalrides
-FROM `bigquery-newproject.cyclistic.tripdata-202103-202202`
-GROUP BY weekday, member_casual
-ORDER BY totalrides DESC
-
-#get total rides for just casual riders (replace casual in where clause for members)
-SELECT member_casual, 
-EXTRACT(DAYOFWEEK FROM(started_at)) AS weekday, 
-COUNT(EXTRACT(DAYOFWEEK FROM started_at)) AS totalrides
-FROM `bigquery-newproject.cyclistic.tripdata-202103-202202`
-WHERE member_casual = "casual"
-GROUP BY weekday, member_casual
-ORDER BY totalrides DESC
+  #aggregate total ride for each rider type and day of week (1 is Sunday, 2 is Monday... 7 is Saturday)
+SELECT 
+  member_casual, 
+  EXTRACT(DAYOFWEEK FROM started_at) AS weekday, 
+  COUNT(EXTRACT(DAYOFWEEK FROM started_at)) AS totalrides
+FROM 
+  `bigquery-newproject.cyclistic.tripdata-202103-202202`
+GROUP BY 
+  weekday, member_casual
+ORDER BY 
+  totalrides DESC
 
 
-#get top trip paths (start station to end station) by rider_type. Replace 'casual' with 'member' in where clause for annual member
-#trying to find out what paths are most common among each type of rider
-SELECT member_casual,
-CONCAT(start_station_name, " - ", end_station_name) AS trip_path,
-COUNT(CONCAT(start_station_name, "-", end_station_name)) AS tripcount
-FROM `bigquery-newproject.cyclistic.tripdata-202103-202202`
-WHERE member_casual = "casual"
-GROUP BY member_casual, trip_path
-ORDER BY tripcount DESC
-LIMIT 20
+  #get total rides for just casual riders (replace casual in where clause for members)
+SELECT 
+  member_casual, 
+  EXTRACT(DAYOFWEEK FROM(started_at)) AS weekday, 
+  COUNT(EXTRACT(DAYOFWEEK FROM started_at)) AS totalrides
+FROM 
+  `bigquery-newproject.cyclistic.tripdata-202103-202202`
+WHERE 
+  member_casual = "casual"
+GROUP 
+  BY weekday, member_casual
+ORDER BY 
+  totalrides DESC
+
+
+  #get top trip paths (start station to end station) by rider_type. Replace 'casual' with 'member' in where clause for annual member
+  #trying to find out what paths are most common among each type of rider
+SELECT 
+  member_casual,
+  CONCAT(start_station_name, " - ", end_station_name) AS trip_path,
+  COUNT(CONCAT(start_station_name, "-", end_station_name)) AS tripcount
+FROM 
+  `bigquery-newproject.cyclistic.tripdata-202103-202202`
+WHERE 
+  member_casual = "casual"
+GROUP BY 
+  member_casual, trip_path
+ORDER BY 
+  tripcount DESC
+LIMIT 
+  20
 
